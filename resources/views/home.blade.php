@@ -13,7 +13,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                        <h3>This is User Home Page</h3>
+                        <h3>This is User Home Page Make some redirection</h3>
                     {{ __('You are logged in!') }}
                 </div>
             </div>
