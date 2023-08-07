@@ -2,14 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use App\Models\Profession;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function dashboard(){
+        // dd('dashboard');
+        return view('admin.dashboard');
+    }
+
+
     public function index()
     {
         $users = User::all();
@@ -22,16 +31,56 @@ class AdminController extends Controller
     public function create()
     {
         // dd('Creating a new resource');
-        return view('admin.posts.index');
+        $professions = Profession::all();
+        return view('admin.posts.index',compact('professions'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'profession_id' => 'required',
+            'publication' => 'nullable|sometimes',
+            'duration' => 'required',
+            'image' => 'required|max:2048',
+        ]);
+        $input = $request->all();
+
+        if ($image = $request->file('image')) {
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $image->move('images/', $filename);
+            $input['image'] = $filename;
+        }
+
+        Post::create($input);
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Post created successfully.');
+            
+    } catch (\Throwable $th) {
+        // Return an error response if any exception occurs
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage()
+        ]);
     }
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+
+}
+
 
     /**
      * Display the specified resource.

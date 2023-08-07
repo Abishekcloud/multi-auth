@@ -30,6 +30,8 @@ Route::prefix('admin')->middleware('is_admin')->group(function () {
     ->name('admin.home')
    ;
     // Route::resource('/index', AdminController::class);
+    Route::get('/dashboard',[AdminController::class,'dashboard'])->name('dashboard');
     Route::get('/index',[AdminController::class,'index'])->name('index');
     Route::get('/create', [AdminController::class,'create'])->name('create');
+    Route::post('/store',[AdminController::class,'store'])->name('store');
 });
