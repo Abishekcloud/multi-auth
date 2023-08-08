@@ -16,6 +16,7 @@ class Post extends Model
         'profession_id',
         'email',
         'image',
+        'message',
         'duration',
     ];
 

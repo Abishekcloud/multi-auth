@@ -15,7 +15,8 @@ class AdminController extends Controller
      */
     public function dashboard(){
         // dd('dashboard');
-        return view('admin.dashboard');
+        $posts = Post::all();
+        return view('admin.dashboard',compact('posts'));
     }
 
 
@@ -49,21 +50,25 @@ class AdminController extends Controller
             'profession_id' => 'required',
             'publication' => 'nullable|sometimes',
             'duration' => 'required',
+            'message' => 'required',
             'image' => 'required|max:2048',
         ]);
         $input = $request->all();
 
         if ($image = $request->file('image')) {
-            $filename = time() . '.' . $image->getClientOriginalExtension();
-            $image->move('images/', $filename);
-            $input['image'] = $filename;
-        }
+            $destinationPath = 'images/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            $input['image'] = "$profileImage";
+            }
+
+
 
         Post::create($input);
-
+        // dd($input);
         return redirect()->route('dashboard')
             ->with('success', 'Post created successfully.');
-            
+
     } catch (\Throwable $th) {
         // Return an error response if any exception occurs
         return response()->json([

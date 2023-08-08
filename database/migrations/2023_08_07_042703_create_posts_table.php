@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('image');
             $table->unsignedBigInteger('profession_id');
             $table->foreign('profession_id')->references('id')->on('professions')->onDelete('cascade');
-            $table->string('publication')->default('Not Defeined');
+            $table->string('publication')->default('Not Defined');
+            $table->string('message');
             $table->string('duration');
             $table->timestamps();
         });
