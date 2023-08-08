@@ -16,7 +16,8 @@ class AdminController extends Controller
     public function dashboard(){
         // dd('dashboard');
         $posts = Post::all();
-        return view('admin.dashboard',compact('posts'));
+        $professions = Profession::all();
+        return view('admin.dashboard',compact('posts','professions'));
     }
 
 
@@ -40,52 +41,46 @@ class AdminController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    try {
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required',
-            'profession_id' => 'required',
-            'publication' => 'nullable|sometimes',
-            'duration' => 'required',
-            'message' => 'required',
-            'image' => 'required|max:2048',
-        ]);
-        $input = $request->all();
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'email' => 'required|email',
+                'phone' => 'required',
+                'profession_id' => 'required',
+                'publication' => 'nullable|sometimes',
+                'duration' => 'required',
+                'message' => 'required',
+                'image' => 'mimes:jpeg,jpg,png,gif|required|max:10000',
+            ]);
 
-        if ($image = $request->file('image')) {
-            $destinationPath = 'images/';
-            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
-            $image->move($destinationPath, $profileImage);
-            $input['image'] = "$profileImage";
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
             }
 
+            $input = $request->all();
 
+            if ($image = $request->file('image')) {
+                $destinationPath = 'images/';
+                $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+                $image->move($destinationPath, $profileImage);
+                $input['image'] = $profileImage;
+            }
+            Post::create($input);
 
-        Post::create($input);
-        // dd($input);
-        return redirect()->route('dashboard')
-            ->with('success', 'Post created successfully.');
-
-    } catch (\Throwable $th) {
-        // Return an error response if any exception occurs
-        return response()->json([
-            'status' => false,
-            'message' => $th->getMessage()
-        ]);
-    }
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return redirect()->route('dashboard')
+                ->with('success', 'Post created successfully.');
+        } catch (\Throwable $th) {
+            // Return an error response if any exception occurs
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ]);
         }
-
-
-}
-
+    }
 
     /**
      * Display the specified resource.

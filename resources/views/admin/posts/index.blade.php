@@ -5,9 +5,18 @@
 
 <div class="p-6 sm:ml-64">
     <div class="p-8 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input. <br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
        <div class="grid grid-cols-2 gap-4">
-
-<form action="{{ route('store')}}" method="POST">
+<form action="{{ route('store')}}" method="POST" enctype="multipart/form-data">
 @csrf
     <div class="grid md:grid-cols-2 md:gap-6">
       <div class="relative z-0 w-full mb-6 group">

@@ -23,4 +23,11 @@ class Post extends Model
     protected $nullable = [
         'publication',
     ];
+
+    // Post.php
+public function profession()
+{
+    return $this->belongsTo(Profession::class);
+}
+
 }

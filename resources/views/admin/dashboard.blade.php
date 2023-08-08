@@ -1,113 +1,71 @@
 @extends('layouts.admin')
 
 @section('postscontent')
+    <h1>Author's Posts are Displayed Here</h1>
 
-<div class="p-6 sm:ml-64">
-    <div class="p-8 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
-       <div class="grid grid-cols-2 gap-4">
+    @foreach ($posts as $post)
+        <div class="p-6 sm:ml-64 ">
+            <div class="p-8 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 transition-all duration-300 rounded-lg cursor-pointer filter grayscale hover:grayscale-0">
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="{{ route('admin.home') }}">
+                    {{-- Image --}}
+                            <div class="column">
+                                <div class="profile-info">
+                                    <img src="{{ asset('images/' . $post->image) }}" class="profile-image"
+                                        alt="{{ $post->first_name }}" width="200px">
+                                </div>
+                            </div>
 
-        <h1>Author's Posts are Displayed Here</h1>
-       </div>
+                    {{-- Details --}}
+                            <div class="column">
+                                <div class="profile-details">
+                                    <h2><strong> {{ $post->first_name }} {{ $post->last_name }}</strong></h2>
+                                    <p><strong> Profession: </strong><span>{{ $post->profession->name }}</span></p>
+                                </div>
+                                <div class="post-content">
+                                    <p class="post-message"><strong> Message: </strong><span>{{ $post->message }}</span></p>
+                                </div>
+                            </div>
 
-       <style>
-        .post {
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-bottom: 20px;
-            width: 300px;
-        }
+                            <div class="column">
+                                <div class="post-content">
+                                    <p class="post-message"><strong> Phone: </strong><span>{{ $post->phone }}</span></p>
+                                </div>
+                                <div class="post-content">
+                                    <p class="post-message"><strong> Publication: </strong><span>{{ $post->publication }}</span></p>
+                                </div>
+                                <div class="post-content">
+                                    <p class="post-message"><strong> Duration : </strong><span>{{ $post->duration }}</span></p>
+                                </div>
+                            </div>
+                        </div>
 
-        .dp img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
+                {{-- Errors message --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <strong>Whoops!</strong> There were some problems with your input. <br><br>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-        .post-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+                {{-- Success Message --}}
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-        .name {
-            font-weight: bold;
-        }
 
-        .post-content {
-            margin-bottom: 10px;
-        }
+                    <div class="post-container">
+                        <div class="column"></div>
+                    </div>
+                </a>
 
-        .post-content img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .post-bottom {
-            display: flex;
-            justify-content: space-between;
-        }
-    </style>
-
-{{-- Errors message --}}
-       @if ($errors->any())
-<div class="alert alert-danger">
-    <strong>Whoops!</strong> There were some problems with your input. <br><br>
-    <ul>
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
-
-{{-- Success Message --}}
-       @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-
-@foreach ($posts as $post)
-    <div class="post">
-        <div class="post-top">
-            <div class="dp">
-                <img src="./images/dp.jpg" alt="">
-            </div>
-            <div class="post-info">
-                <p class="name">{{$post->first_name}} {{$post->last_name}}</p>
-                {{-- <span class="time">{{$post->created_at}}</span> --}}
             </div>
         </div>
-
-        <div class="post-content">
-            <img src="{{$post->image}}" alt="{{$post->image}}">
-        </div>
-
-        <div class="post-bottom">
-            <div class="action">
-                <a class="btn btn-outline-secondary" href="#"> View</a>
-            </div>
-            <div class="action">
-                <a class="btn btn-outline-primary" href="#"> Edit</a>
-            </div>
-            <div class="action">
-                <form action="#" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-outline-danger">Delete</button>
-                </form>
-            </div>
-        </div>
-    </div>
-@endforeach
-
-    </div>
-
-
-
- </div>
-
-
+    @endforeach
+@endsection
